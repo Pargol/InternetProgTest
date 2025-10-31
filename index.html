@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Management</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #eaf2f1;
+      text-align: center;
+    }
+
+    header {
+      background-color: #3baa52;
+      color: white;
+      padding: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav {
+      background-color: #3baa52;
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem 0;
+      gap: 10px;
+    }
+
+    nav button {
+      background: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #2e8b44;
+      transition: 0.2s;
+    }
+
+    nav button:hover {
+      background-color: #2e8b44;
+      color: white;
+    }
+
+    section {
+      display: none;
+      margin: 2rem auto;
+      width: 80%;
+      max-width: 700px;
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e8b44;
+      margin-bottom: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #3baa52;
+      color: white;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 4px;
+      border: 1px solid #aaa;
+    }
+
+    button.action {
+      background-color: #3baa52;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button.action:hover {
+      background-color: #2e8b44;
+    }
+
+    .message {
+      color: #2e8b44;
+      font-weight: bold;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    /* Update form styling */
+    .update-form {
+      display: none;
+      margin-top: 1.5rem;
+      background: #f8fdf9;
+      border: 1px solid #cce3cc;
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+
+    .update-form input, .update-form textarea {
+      border: 1px solid #3baa52;
+    }
+  </style>
+</head>
+
+<body>
+  <header>Product Management</header>
+
+  <nav>
+    <button onclick="showSection('create')">Create Product</button>
+    <button onclick="showSection('read')">Read Product</button>
+    <button onclick="showSection('update')">Update Product</button>
+    <button onclick="showSection('delete')">Delete Product</button>
+  </nav>
+
+  <!-- CREATE PRODUCT -->
+  <section id="create">
+    <h2>Create Product</h2>
+    <input type="text" id="createName" placeholder="Product Name"><br>
+    <textarea id="createDesc" placeholder="Description"></textarea><br>
+    <input type="number" id="createPrice" placeholder="Price"><br>
+    <button class="action" onclick="createProduct()">Add Product</button>
+    <div class="message" id="createMsg"></div>
+  </section>
+
+  <!-- READ PRODUCTS -->
+  <section id="read">
+    <h2>Product List</h2>
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Price</th><th>Description</th></tr>
+      </thead>
+      <tbody id="productTable"></tbody>
+    </table>
+    <button class="action" onclick="displayProducts()">Refresh</button>
+  </section>
+
+  <!-- UPDATE PRODUCT (List + Editable Form) -->
+  <section id="update">
+    <h2>Update Product</h2>
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Price</th><th>Action</th></tr>
+      </thead>
+      <tbody id="updateTable"></tbody>
+    </table>
+
+    <!-- Hidden form appears when "Edit" is clicked -->
+    <div class="update-form" id="updateForm">
+      <h3 style="text-align:center; color:#2e8b44;">Edit Product Details</h3>
+      <input type="text" id="updateName" placeholder="New Name">
+      <textarea id="updateDesc" placeholder="New Description"></textarea>
+      <input type="number" id="updatePrice" placeholder="New Price">
+      <button class="action" onclick="updateProduct()">Save Changes</button>
+      <div class="message" id="updateMsg"></div>
+    </div>
+  </section>
+
+  <!-- DELETE PRODUCT -->
+  <section id="delete">
+    <h2>Delete Product</h2>
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Price</th><th>Action</th></tr>
+      </thead>
+      <tbody id="deleteTable"></tbody>
+    </table>
+  </section>
+
+  <script>
+    let products = [
+      
+    ];
+
+    let selectedProductId = null;
+
+    function showSection(id) {
+      document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+      if (id === 'read') displayProducts();
+      if (id === 'update') displayUpdateTable();
+      if (id === 'delete') displayDeleteTable();
+    }
+
+    // CREATE
+    function createProduct() {
+      const name = document.getElementById('createName').value;
+      const desc = document.getElementById('createDesc').value;
+      const price = parseFloat(document.getElementById('createPrice').value);
+
+      if (!name || isNaN(price)) {
+        document.getElementById('createMsg').innerText = "Please enter valid name and price.";
+        return;
+      }
+
+      const newProduct = { id: Date.now(), name, price, desc };
+      products.push(newProduct);
+      document.getElementById('createMsg').innerText = " Product added!";
+      document.getElementById('createName').value = "";
+      document.getElementById('createDesc').value = "";
+      document.getElementById('createPrice').value = "";
+    }
+
+    // READ
+    function displayProducts() {
+      const tbody = document.getElementById('productTable');
+      tbody.innerHTML = "";
+      products.forEach(p => {
+        const row = `<tr><td>${p.name}</td><td>$${p.price.toFixed(2)}</td><td>${p.desc}</td></tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    // UPDATE
+    function displayUpdateTable() {
+      const tbody = document.getElementById('updateTable');
+      tbody.innerHTML = "";
+      products.forEach(p => {
+        const row = `
+          <tr>
+            <td>${p.name}</td>
+            <td>$${p.price.toFixed(2)}</td>
+            <td><button class="action" onclick="editProduct(${p.id})">Edit</button></td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+      document.getElementById('updateForm').style.display = 'none';
+    }
+
+    function editProduct(id) {
+      selectedProductId = id;
+      const product = products.find(p => p.id === id);
+      if (!product) return;
+
+      document.getElementById('updateName').value = product.name;
+      document.getElementById('updateDesc').value = product.desc;
+      document.getElementById('updatePrice').value = product.price;
+
+      document.getElementById('updateForm').style.display = 'block';
+      document.getElementById('updateMsg').innerText = "";
+    }
+
+    function updateProduct() {
+      if (!selectedProductId) return;
+      const product = products.find(p => p.id === selectedProductId);
+      if (!product) return;
+
+      product.name = document.getElementById('updateName').value;
+      product.desc = document.getElementById('updateDesc').value;
+      product.price = parseFloat(document.getElementById('updatePrice').value);
+
+      document.getElementById('updateMsg').innerText = "✅ Product updated!";
+      displayUpdateTable();
+      selectedProductId = null;
+      setTimeout(() => document.getElementById('updateMsg').innerText = "", 2000);
+    }
+
+    // DELETE
+    function displayDeleteTable() {
+      const tbody = document.getElementById('deleteTable');
+      tbody.innerHTML = "";
+      products.forEach(p => {
+        const row = `
+          <tr>
+            <td>${p.name}</td>
+            <td>$${p.price.toFixed(2)}</td>
+            <td><button class="action" onclick="deleteProduct(${p.id})">Delete</button></td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    function deleteProduct(id) {
+      if (confirm("Are you sure you want to delete this product?")) {
+        products = products.filter(p => p.id !== id);
+        displayDeleteTable();
+      }
+    }
+
+    // Default view
+    showSection('read');
+  </script>
+</body>
+</html>

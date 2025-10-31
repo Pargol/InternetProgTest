@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <canvas id="canvas" width="600" height="400"></canvas>
+
+    <script>
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = 'skyblue';
+        ctx.fillRect(0,0,600,400);
+
+        ctx.fillStyle = 'green';
+        ctx.fillRect(0,350,600,50);
+
+
+        ctx.beginPath();
+        ctx.arc(80,80,40,0,360)
+        ctx.fillStyle='yellow'
+        ctx.fill();
+
+        //ctx.font = '20px Arial'
+        //ctx.fillStyle = 'black'
+        //ctx.fillText('hello here' , 150,150); 
+
+
+        ctx.fillStyle = 'brown'
+        ctx.fillRect(200,180,200,170);
+
+        ctx.beginPath();
+        ctx.moveTo(180,180);//leftcorner
+        ctx.lineTo(300,80);//topof roof
+        ctx.lineTo(420,180);//rigt corner
+        ctx.closePath();
+        ctx.fillStyle='black';
+        ctx.fill();
+
+        ctx.fillStyle = '#654321'
+        ctx.fillRect(270,250,60,100);
+
+        //windowleft
+        ctx.fillStyle = '#add8e6'
+        ctx.fillRect(220,200,40,40);
+
+        //window rigt
+        ctx.fillStyle = '#add8e6'
+        ctx.fillRect(330,200,40,40);
+
+
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;
+
+
+        ctx.beginPath();
+        ctx.moveTo(240,200);
+        ctx.lineTo(240,240);
+        ctx.moveTo(220,220);
+        ctx.lineTo(260,220);
+        ctx.stroke();
+
+
+        ctx.beginPath();
+        ctx.moveTo(350,200);
+        ctx.lineTo(350,240);
+        ctx.moveTo(330,220);
+        ctx.lineTo(370,220);
+        ctx.stroke();
+
+
+
+        //tree
+
+        ctx.fillStyle = '#8B4513'; 
+        ctx.fillRect(480, 250, 30, 100); 
+
+        // Tree leaves (separate paths for each circle)
+        ctx.fillStyle = 'darkgreen';
+
+        // center top
+        ctx.beginPath();
+        ctx.arc(495, 230, 35, 0, Math.PI * 2);
+        ctx.fill();
+
+        // left cluster
+        ctx.beginPath();
+        ctx.arc(470, 240, 35, 0, Math.PI * 2);
+        ctx.fill();
+
+        // right cluster
+        ctx.beginPath();
+        ctx.arc(520, 240, 35, 0, Math.PI * 2);
+        ctx.fill();
+
+        // upper cluster
+        ctx.beginPath();
+        ctx.arc(495, 210, 35, 0, Math.PI * 2);
+        ctx.fill();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <header>Product Managment</header>
+
+    <nav>
+        <button onclick="showSection('create')">Create Product</button>
+        <button onclick="showSection('read')">Read Product</button>
+        <button onclick="showSection('update')">Update Product</button>
+        <button onclick="showSection('delete')">Delete Product</button>
+
+    </nav>
+
+
+    <section id="create">
+
+        <h2>Create Product</h2>
+        <input type="text" id="createName" placeholder="product Name"><br>
+        <input type="number" id="createPrice" placeholder="product Price"><br>
+        <textarea id="createDesc" placeholder="product Desc"></textarea><br>
+        <button class="action" onclick="createProduct()">Add Product</button>
+
+    </section>
+
+
+    <section id="read">
+
+        <h2>Read Product</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody id="productTable">
+
+            </tbody>
+        </table>
+
+    </section>
+    <section id="update">
+        <h2>update Product</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Desc</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="updateTable">
+
+            </tbody>
+        </table>
+
+
+        <div id="updateForm">
+            <h3>Edite Product details</h3>
+             <input type="text" id="updateName" placeholder="New Name"><br>
+            <input type="number" id="updatePrice" placeholder="New Price"><br>
+            <textarea id="updateDesc" placeholder="New Desc"></textarea><br>
+            <button class="action" onclick="updateProduct()">Save Product</button>
+        </div>
+
+
+
+    </section>
+    <section id="delete">
+
+        <h2>delete Product</h2>
+
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="deleteTable">
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+
+
+
+    <script>
+
+        //general so all my method has access to it
+
+        let products = [
+
+        ];
+
+        let selectedProductId = null;
+
+        function createProduct() {
+            const name = document.getElementById('createName').value;
+            const price = parseFloat(document.getElementById('createPrice').value);
+            const desc = document.getElementById('createDesc').value;
+
+            if (!name || !desc || isNaN(price)) {
+                alert('please fill ever');
+                return;
+            }
+
+            const newProduct = { id: Date.now(), name, price, desc };
+            products.push(newProduct);
+            document.getElementById('createName').value = "";
+            document.getElementById('createPrice').value = "";
+            document.getElementById('createDesc').value = "";
+
+            console.log(products);
+
+        }
+
+        function displayProduct() {
+
+            const tbody = document.getElementById("productTable")
+
+            tbody.innerHTML = "";
+            products.forEach(p => {
+                const row = `<tr>
+                <td>${p.name}</td>
+                <td>${p.price}</td>
+                <td>${p.desc}</td>
+                    </tr>
+                `
+                tbody.innerHTML += row;
+            });
+
+        }
+
+
+        function displayDeleteTable() {
+            //deleteTable
+            const tbody = document.getElementById("deleteTable")
+            tbody.innerHTML = "";
+            products.forEach(p => {
+                const row = `<tr>
+                <td>${p.name}</td>
+                <td>${p.price}</td>
+                <td>${p.desc}</td>
+                <td><button class="action" onclick = "deletePRoduct(${p.id})">Delete</button></td>
+                    </tr>
+                `
+                tbody.innerHTML += row;
+            });
+
+        }
+
+        function deletePRoduct(id) {
+            products = products.filter(p => p.id !== id);
+            displayDeleteTable();
+        }
+
+
+        function displayUpdateTable(){
+            const tbody = document.getElementById("updateTable")
+            tbody.innerHTML = "";
+            products.forEach(p => {
+                const row = `<tr>
+                <td>${p.name}</td>
+                <td>${p.price}</td>
+                <td>${p.desc}</td>
+                <td><button class="action" onclick = "editePRoduct(${p.id})">Edite</button></td>
+                    </tr>
+                `
+                tbody.innerHTML += row;
+            });
+
+            //hide my form
+            document.getElementById("updateForm").style.display = 'none';
+        }
+
+
+        function editePRoduct(id){
+            selectedProductId =id;
+            const product = products.find(p => p.id === id);
+
+            if(!product) return
+
+            document.getElementById("updateName").value = product.name;
+            document.getElementById("updatePrice").value = product.price;
+            document.getElementById("updateDesc").value = product.desc;
+
+
+            document.getElementById("updateForm").style.display = 'block';
+
+        }
+
+
+
+            function updateProduct(){
+                if(!selectedProductId) return;
+                const product = products.find(p => p.id === selectedProductId);
+                if(!product) return;
+
+                product.name = document.getElementById("updateName").value;
+                product.price =parseFloat( document.getElementById("updatePrice").value);
+                product.desc =  document.getElementById("updateDesc").value;
+
+                displayUpdateTable();
+                selectedProductId = null;
+
+
+            }
+
+
+
+
+
+
+        function showSection(id) {
+            document.querySelectorAll('section').forEach(s => s.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+            if (id === 'read') displayProduct();
+            if (id === 'delete') displayDeleteTable();
+            if (id === 'update') displayUpdateTable();
+
+        }
+        //default
+        showSection('create');
+    </script>
+</body>
+
+</html>
